@@ -61,10 +61,16 @@ class Stage:
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_ACCELERATION, 500000000000)
         
     def disconnectStage(self):
+        '''
+        Disconnect the stage and close the handle to the sensor. 
+        '''
         ctl.Close(self.d_handle)
         print("Stage/sensor disconnected")
         
-    def getState(self): #Returns a binary string which corresponds to the state flags of the channel
+    def getState(self): 
+        '''
+        Returns a binary string which corresponds to the state flags of the channel.
+        '''
         self.channel_state=ctl.GetProperty_i32(self.d_handle,self.channel,ctl.Property.CHANNEL_STATE)
         return bin(self.channel_state)[2:]
         
