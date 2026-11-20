@@ -46,6 +46,9 @@ class ZurichInstruments:
         self.session.devices['dev32434'].demods[2].rate(40000)
 
     def disconnect_lockin(self):
+        '''
+        Unsubscribe from the demodulator nodes and disconnect from the Zurich Instruments 
+        '''
         self.device.demods[1].sample.unsubscribe()
         self.device.demods[2].sample.unsubscribe()
         self.session.disconnect_device("DEV32434")
