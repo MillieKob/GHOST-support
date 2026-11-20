@@ -9,6 +9,8 @@ class ZurichInstruments:
     def connect_lockin(self):
         '''
         Connect to the Zurich Instruments lock-in amplifier and set up the demodulators and boxcars for GHOST and differential measurements.
+
+        This measurement assumes that one of the demodulators runs at half of the trigger frequency and the other at a quarter.
         '''
         self.device = self.session.connect_device("dev32434")
         
@@ -23,7 +25,7 @@ class ZurichInstruments:
         self.session.devices['dev32434'].demods[3].oscselect(1) #Select the second oscillator for demod4
         self.session.devices['dev32434'].extrefs[1].demodselect(3) #Select extref2 as osc2
         self.session.devices['dev32434'].extrefs[1].enable(1)
-        self.session.devices['dev32434'].demods[3].harmonic(4) #Divide laser signal used as trigger input
+        self.session.devices['dev32434'].demods[3].harmonic(4) #Divide laser signal used as trigger input by 4
         
         #Boxcars initial settings
         self.session.devices['dev32434'].boxcars[0].enable(1) #enable boxcars
@@ -35,14 +37,14 @@ class ZurichInstruments:
         #GHOST demodulator
         self.session.devices['dev32434'].demods[1].adcselect(4) #Select aux1 as the input to demod2
         self.session.devices['dev32434'].demods[1].oscselect(1) #Trigger with oscillator 2
-        self.session.devices['dev32434'].demods[1].harmonic(2) #Times to match the GHOST frequency
+        self.session.devices['dev32434'].demods[1].harmonic(2) #Multiply the demod1 frequency by 2
         self.session.devices['dev32434'].demods[1].rate(40000)
         
         
         #DIFF demodulator
-        self.session.devices['dev32434'].demods[2].adcselect(4) #Same input as GHOST demodulator
-        self.session.devices['dev32434'].demods[2].oscselect(1) #Same oscillator as GHOST
-        self.session.devices['dev32434'].demods[2].harmonic(1) #No division as oscillator 2 matches pump frequency
+        self.session.devices['dev32434'].demods[2].adcselect(4) #Select aux1 as the input to demod3
+        self.session.devices['dev32434'].demods[2].oscselect(1) #Trigger with oscillator 2
+        self.session.devices['dev32434'].demods[2].harmonic(1) #Do not multiply the demod1 frequency
         self.session.devices['dev32434'].demods[2].rate(40000)
 
     def disconnect_lockin(self):
@@ -84,23 +86,29 @@ class ZurichInstruments:
         self.device.demods[1].sample.unsubscribe()
         return (x,y,r,phase)
     
-    def get_PP_data(self): #same as GHOST data but simultaneously gets information from both demodulators
+    def get_PP_data(self): 
+        '''
+        Subscribe to both the GHOST and differential demodulators, retrieve the x,y, and phase values for both, calculate r from x and y for both, then unsubscribe. Returns an array containing (x1,y1,r1,phase1,x2,y2,r2,phase2).
+        '''
         self.device.demods[1].sample.subscribe()
         self.device.demods[2].sample.subscribe()
         data = self.session.poll(0.02) #Sets the duration over which data is collected.
-        x1 = np.mean(data[self.device.demods[1].sample]['x'])
-        y1 = np.mean(data[self.device.demods[1].sample]['y'])
+        x1 = np.mean(data[self.device.demods[1].sample]['x']) #Average the x values over the duration of the poll
+        y1 = np.mean(data[self.device.demods[1].sample]['y']) #Average the y values over the duration of the poll
         r1 = np.sqrt(x1*x1+y1*y1)
-        phase1 = np.mean(data[self.device.demods[1].sample]['phase'])
-        x2 = np.mean(data[self.device.demods[2].sample]['x'])
-        y2 = np.mean(data[self.device.demods[2].sample]['y'])
+        phase1 = np.mean(data[self.device.demods[1].sample]['phase']) #Average the phase values over the duration of the poll
+        x2 = np.mean(data[self.device.demods[2].sample]['x']) #Average the x values over the duration of the poll
+        y2 = np.mean(data[self.device.demods[2].sample]['y']) #Average the y values over the duration of the poll
         r2 = np.sqrt(x2*x2+y2*y2)
-        phase2 = np.mean(data[self.device.demods[2].sample]['phase'])
+        phase2 = np.mean(data[self.device.demods[2].sample]['phase']) #Average the phase values over the duration of the poll
         self.device.demods[1].sample.unsubscribe()
         self.device.demods[2].sample.unsubscribe()
         return (x1,y1,r1,phase1,x2,y2,r2,phase2)
     
     def DAQ_setup(self):
+        '''
+        Set up the Data Acquisition Module. Still WIP
+        '''
         self.daq_module = self.session.modules.daq
         self.daq_module.device('dev32434')
         self.daq_module.type(0)
@@ -110,6 +118,9 @@ class ZurichInstruments:
         self.daq_module.triggernode('/dev32434/demods/1/sample.TrigIn1')
         
     def DAQ_run(self):
+        '''
+        Run the Data Acquisition Module. Still WIP
+        '''
         self.daq_module.execute()
         while not self.daq_module.raw_module.finished():
             pass
