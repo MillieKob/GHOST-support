@@ -47,19 +47,28 @@ class ZurichInstruments:
 
     def disconnect_lockin(self):
         '''
-        Unsubscribe from the demodulator nodes and disconnect from the Zurich Instruments 
+        Unsubscribe from the demodulator nodes and disconnect from the Zurich Instruments lock-in amplifier.
         '''
         self.device.demods[1].sample.unsubscribe()
         self.device.demods[2].sample.unsubscribe()
         self.session.disconnect_device("DEV32434")
         
-    def set_boxcar_start(self,start):
-        self.session.devices['dev32434'].boxcars[0].windowstart(start)
+    def set_boxcar_start(self,start_phase):
+        '''
+        Set the beginning of the boxcar window to a specific time after the trigger. This is measured in degrees where 360 is the full trigger period. Requires an input phase from the user between 0 and 360.
+        '''
+        self.session.devices['dev32434'].boxcars[0].windowstart(start_phase)
     
-    def set_boxcar_width(self,size):
-        self.session.devices['dev32434'].boxcars[0].windowsize(size)
+    def set_boxcar_width(self,width):
+        '''
+        Set the width of the boxcar window in seconds (I think, check this). Requires an input from the user.
+        '''
+        self.session.devices['dev32434'].boxcars[0].windowsize(width)
         
     def set_lockin_phase(self,demod,phase):
+        '''
+        Set the phase of a specific demodulator. Requires the demodulator index and the desired phase in degrees.
+        '''
         self.session.devices['dev32434'].demods[demod].phaseshift(phase)
     
     def get_GHOST_data(self): #returns an array with X,Y,R, and theta
@@ -76,8 +85,6 @@ class ZurichInstruments:
         self.device.demods[1].sample.subscribe()
         self.device.demods[2].sample.subscribe()
         data = self.session.poll(0.02)
-        # self.device.demods[1].sample.unsubscribe()
-        # self.device.demods[2].sample.unsubscribe()
         x1 = np.mean(data[self.device.demods[1].sample]['x'])
         y1 = np.mean(data[self.device.demods[1].sample]['y'])
         r1 = np.sqrt(x1*x1+y1*y1)
