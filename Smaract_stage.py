@@ -29,7 +29,7 @@ class Stage:
             raise ConnectionError
         locators = buffer.split("\n")
         self.d_handle = ctl.Open(locators[0]) # This handle is used to refer to the sensor, the first entry is chosen
-        self.move_mode = ctl.MoveMode.CL_ABSOLUTE
+        self.move_mode = ctl.MoveMode.CL_ABSOLUTE # Set the stage to closed loop and absolute position mode
         print("Sensor module connected")
         no_of_channels = ctl.GetProperty_i32(self.d_handle, 0, ctl.Property.NUMBER_OF_CHANNELS)
         # print("MCS2 number of channels: {}.".format(no_of_channels))
@@ -76,6 +76,9 @@ class Stage:
         ctl.Move(self.d_handle, self.channel, value+pos)
         
     def setVelocity(self, value):
+        '''
+        Set the velocity of the stage, the value is in pm/s and has to be an integer.
+        '''
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, value)
     
     def calibrate(self):
@@ -87,5 +90,8 @@ class Stage:
         ctl.Reference(self.d_handle, self.channel)
         
     def stop(self):
+        '''
+        Stop the movement of the stage. Print a message to the console.
+        '''
         ctl.Stop(self.d_handle, self.channel)
-        print("Movement stopped manually")
+        print("Stage movement stopped manually")
