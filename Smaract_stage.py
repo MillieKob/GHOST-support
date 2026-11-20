@@ -21,7 +21,7 @@ class Stage:
 
     def connectSensor(self):
         '''
-        Search for available SmarAct sensors and connect to the first one found (change if more sensors are used). 
+        Search for available SmarAct sensors and connect to the first one found. Then set the default settings of the first stage in the sensor.
         '''
         buffer = ctl.FindDevices() # Generate a list of sensors connect, should be precisely one
         if len(buffer) == 0:
@@ -32,28 +32,32 @@ class Stage:
         self.move_mode = ctl.MoveMode.CL_ABSOLUTE # Set the stage to closed loop and absolute position mode
         print("Sensor module connected")
         no_of_channels = ctl.GetProperty_i32(self.d_handle, 0, ctl.Property.NUMBER_OF_CHANNELS)
-        # print("MCS2 number of channels: {}.".format(no_of_channels))
-        # for channel in range(no_of_channels):
-        #     state = ctl.GetProperty_i32(self.d_handle, channel, ctl.Property.CHANNEL_STATE)
-        #     if state & ctl.ChannelState.SENSOR_PRESENT:
-        #         print("MCS2 channel {} has a stage.".format(channel))
-        #     else:
-        #         print("MCS2 channel {} has no stage.".format(channel))
-        self.channel = 0 # select the first stage by default (depends on which port the stage is plugged into)
-        #int(input("Select the channel: ")) # This variable is used to refer to the stage
+
+        print("MCS2 number of channels: {}.".format(no_of_channels))
+        for channel in range(no_of_channels):
+            state = ctl.GetProperty_i32(self.d_handle, channel, ctl.Property.CHANNEL_STATE)
+            if state & ctl.ChannelState.SENSOR_PRESENT:
+                print("MCS2 channel {} has a stage.".format(channel))
+            else:
+                print("MCS2 channel {} has no stage.".format(channel))
+
+        self.channel = 0 # Select the first stage by default, this can. be changed with connectStage function.
         print("Stage connected")
         
         ctl.SetProperty_i32(self.d_handle, self.channel, ctl.Property.REFERENCING_OPTIONS, 0)
-        ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, 50000000)
+        ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, 500000000) # Set the velocity to 500um/s.
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_ACCELERATION, 500000000000)
         
         
     def connectStage(self, channel):
+        '''
+        Connect to a specific stage and set the default settings of the stage.
+        '''
         self.channel = channel
         print("Stage connected")
         
         ctl.SetProperty_i32(self.d_handle, self.channel, ctl.Property.REFERENCING_OPTIONS, 0)
-        ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, 50000000)
+        ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, 500000000) # Set the velocity to 500um/s.
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_ACCELERATION, 500000000000)
         
     def disconnectStage(self):
