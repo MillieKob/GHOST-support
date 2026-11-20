@@ -1,1 +1,2 @@
 zhinst-toolkit
+numpy 
