@@ -20,6 +20,9 @@ class Stage:
             raise RuntimeError("Incompatible SmarActCTL python api and library version.")
 
     def connectSensor(self):
+        '''
+        Search for available SmarAct sensors and connect to the first one found (change if more sensors are used). 
+        '''
         buffer = ctl.FindDevices() # Generate a list of sensors connect, should be precisely one
         if len(buffer) == 0:
             print("No devices found")
