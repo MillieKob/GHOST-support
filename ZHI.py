@@ -71,20 +71,23 @@ class ZurichInstruments:
         '''
         self.session.devices['dev32434'].demods[demod].phaseshift(phase)
     
-    def get_GHOST_data(self): #returns an array with X,Y,R, and theta
+    def get_GHOST_data(self):
+        '''
+        Subscribe to the GHOST demodulator, retrieve the x,y, and phase values, calculate r from x and y, then unsubscribe. Returns an array containing (x,y,r,phase).
+        '''
         self.device.demods[1].sample.subscribe()
-        data = self.session.poll(0.05)
-        x = np.mean(data[self.device.demods[1].sample]['x'])
-        y = np.mean(data[self.device.demods[1].sample]['y'])
+        data = self.session.poll(0.05) #Sets the duration over which data is collected.
+        x = np.mean(data[self.device.demods[1].sample]['x']) #Average the x values over the duration of the poll
+        y = np.mean(data[self.device.demods[1].sample]['y']) #Average the y values over the duration of the poll
         r = np.sqrt(x*x+y*y)
-        phase = np.mean(data[self.device.demods[1].sample]['phase'])
+        phase = np.mean(data[self.device.demods[1].sample]['phase']) #Average the phase values over the duration of the poll
         self.device.demods[1].sample.unsubscribe()
         return (x,y,r,phase)
     
     def get_PP_data(self): #same as GHOST data but simultaneously gets information from both demodulators
         self.device.demods[1].sample.subscribe()
         self.device.demods[2].sample.subscribe()
-        data = self.session.poll(0.02)
+        data = self.session.poll(0.02) #Sets the duration over which data is collected.
         x1 = np.mean(data[self.device.demods[1].sample]['x'])
         y1 = np.mean(data[self.device.demods[1].sample]['y'])
         r1 = np.sqrt(x1*x1+y1*y1)
@@ -101,7 +104,6 @@ class ZurichInstruments:
         self.daq_module = self.session.modules.daq
         self.daq_module.device('dev32434')
         self.daq_module.type(0)
-        # self.daq_module.duration(0.00000001)
         self.daq_module.grid.cols(256)
         self.daq_module.holdoff.time(0.001)
         self.daq_module.subscribe(self.device.demods[1].sample.x)
