@@ -75,13 +75,22 @@ class Stage:
         return bin(self.channel_state)[2:]
         
     def getPosition(self):
-        self.position = ctl.GetProperty_i64(self.d_handle,self.channel,ctl.Property.POSITION)
-        return self.position
+        '''
+        Query the current position of the stage in pm. Return it as an output.
+        '''
+        position = ctl.GetProperty_i64(self.d_handle,self.channel,ctl.Property.POSITION)
+        return position
     
     def setPosition(self, value):
+        '''
+        Set the position of the stage to a specific value in pm. Input has to be an integer.
+        '''
         ctl.Move(self.d_handle, self.channel, value)
     
     def stepMove(self,value):
+        '''
+        Move the stage by the input value in pm. It moves the stage to the sum of its current position and the function input.
+        '''
         pos=self.getPosition()
         ctl.Move(self.d_handle, self.channel, value+pos)
         
