@@ -69,7 +69,30 @@ class Stage:
         
     def getState(self): 
         '''
-        Returns a binary string which corresponds to the state flags of the channel.
+        Returns a binary string which corresponds to the state flags of the channel. The following bits are defined:
+        0 - Stage is actively moving
+        1 - Stage is in closed loop mode
+        2 - Stage is calibrating
+        3 - Stage is referencing
+        4 - Stage is waiting to power-up before initiating movement
+        5 - An integrated sensor is attached to the channel
+        6 - Stage is calibrated
+        7 - Stage is referenced
+        8 - Stage has hit a mechanical stop
+        9 - Stage has hit a configured software range limit
+        10 - Stage's following error exceeded the configured limit
+        11 - Last movement command failed
+        12 - Channel is "currently participating in a trajectory stream or performing a waveform movement".
+        13 - Stage is overloaded
+        14 - Stage is overheated
+        15 - State of the electrical reference mark signal
+        16 - Channel has valid data for the communication of an electromagnetic positioner
+        17 - Positioning fault detected
+        18 - Amplifier is enabled on this channel
+        19 - Stage is in position
+        20 - Break of an electromagnetic driver state
+        21 - Tactile sensing is triggered
+        For more details look in the MCS2 programmer's guide page 75 
         '''
         self.channel_state=ctl.GetProperty_i32(self.d_handle,self.channel,ctl.Property.CHANNEL_STATE)
         return bin(self.channel_state)[2:]
