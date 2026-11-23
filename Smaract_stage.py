@@ -133,11 +133,17 @@ class Stage:
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, value)
     
     def calibrate(self):
+        '''
+        Set the calibration flags to zero (default, page 322) and then callibrate the stage.
+        '''
         print("MCS2 start calibration on channel: {}.".format(self.channel))
-        ctl.SetProperty_i32(self.d_handle, self.channel, ctl.Property.CALIBRATION_OPTIONS, 0)
+        ctl.SetProperty_i32(self.d_handle, self.channel, ctl.Property.CALIBRATION_OPTIONS, 0) #Clear all calibration flags before callibrating
         ctl.Calibrate(self.d_handle, self.channel)
         
     def reference(self):
+        '''
+        Reference the stage.
+        '''
         ctl.Reference(self.d_handle, self.channel)
         
     def stop(self):
