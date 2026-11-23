@@ -108,12 +108,18 @@ class Stage:
         '''
         Set the position of the stage to a specific value in pm. Input has to be an integer.
         '''
+        if value is not int:
+            raise TypeError("Input value has to be an integer")
+        
         ctl.Move(self.d_handle, self.channel, value)
     
     def stepMove(self,value):
         '''
         Move the stage by the input value in pm. It moves the stage to the sum of its current position and the function input.
         '''
+        if value is not int:
+            raise TypeError("Input value has to be an integer")
+        
         pos=self.getPosition()
         ctl.Move(self.d_handle, self.channel, value+pos)
         
@@ -121,6 +127,9 @@ class Stage:
         '''
         Set the velocity of the stage, the value is in pm/s and has to be an integer.
         '''
+        if value is not int:
+            raise TypeError("Input value has to be an integer")
+        
         ctl.SetProperty_i64(self.d_handle, self.channel, ctl.Property.MOVE_VELOCITY, value)
     
     def calibrate(self):
