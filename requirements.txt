@@ -1,2 +1,3 @@
 zhinst-toolkit
 numpy 
+smaract.ctl
