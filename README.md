@@ -18,4 +18,4 @@ Likewise the HS is generated through sum-frequency generation between the test a
 $$ E_{HS} = A_S(t)A_T(t)e^{i(\omega_S (t+\tau) + \omega_T(t) + \phi_T + \phi_S)}
 If the frequency of the test and sampling pulse match, then we can detect an interference signal by measuring the intensity with a photodetector. By writing $\omega_S=\omega_T=\omega$ we find: \n
 $$ I_{HS+LO} = I_{HS} + I_{LO} + 2A_S^3A_T\cos(\omega\tau+\phi_T-\phi_S) $$ 
-If the test and sampling pulses originate from the same laser, then in a given shot $\phi_T=\phi_s$ and hence this method of detection works even without carrier-envelope phase (CEP) stable pulses.
+If the test and sampling pulses originate from the same laser, then in a given shot $\phi_T=\phi_s$ and hence this method of detection works even without carrier-envelope phase (CEP) stable pulses as the phase term cancels out.
