@@ -1,3 +1,4 @@
 zhinst-toolkit
 numpy 
 smaract.ctl
+PyQt5
