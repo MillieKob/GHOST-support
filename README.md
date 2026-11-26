@@ -7,14 +7,14 @@ GHOST (Generalised Heterodyne Optical Sampling Techniques) is a field-resolved s
 
 ## Theory
 
-The field that we want to mesure is called the test field and it can be written as
+The field that we want to mesure is called the test field and it can be written as: \n
 $$ E_T = A_T(t)e^{i(\omega_T t + \phi_T)} $$
-The field that is used to generate the LO and the signal is called the sampling field and can be written as
+The field that is used to generate the LO and the signal is called the sampling field and can be written as: \n
 $$ E_S = A_S(t)e^{i(\omega_S (t+\tau) + \phi_S)} $$
 Here, $A_S$ and $A_T$ are the field envelopes of the sampling and test pulses specifically, which are equal to the square root of their time-dependent intensity, $\omega_S$ and $\omega_T$ are the carrier frequencies of the waves, and $\phi_S$ and $\phi_T$ are the phases of the sampling and test pulses. Here, $\tau$ is the delay between the test and sampling pulses.
-The LO is the result of second harmonic generation of the sampling pulse, and so we can write its electric field as follows:
+The LO is the result of second harmonic generation of the sampling pulse, and so we can write its electric field as follows: \n
 $$ E_{LO} = A_S^2(t)e^{i(2\omega_S (t+\tau) + 2\phi_S)} $$
-Likewise the HS is generated through sum-frequency generation between the test and sampling pulses and thus can be written as:
+Likewise the HS is generated through sum-frequency generation between the test and sampling pulses and thus can be written as: \n
 $$ E_{HS} = A_S(t)A_T(t)e^{i(\omega_S (t+\tau) + \omega_T(t) + \phi_T + \phi_S)}
-If the frequency of the test and sampling pulse match, then we can detect an interference signal by measuring the intensity with a photodetector. This can be written as:
+If the frequency of the test and sampling pulse match, then we can detect an interference signal by measuring the intensity with a photodetector. This can be written as: \n
 $$ I_{HS+LO} = a $$ 
