@@ -53,6 +53,9 @@ class Stage:
         '''
         Connect to a specific stage and set the default settings of the stage.
         '''
+        if channel is not int:
+            raise TypeError("Smaract sensor channel has to be an integer")
+        
         self.channel = channel
         print("Stage connected")
         
