@@ -16,3 +16,5 @@ The LO is the result of second harmonic generation of the sampling pulse, and so
 $$ E_{LO} = A_S^2(t)e^{i(2\omega_S (t+\tau) + 2\phi_S)} $$
 Likewise the HS is generated through sum-frequency generation between the test and sampling pulses and thus can be written as:
 $$ E_{HS} = A_S(t)A_T(t)e^{i(\omega_S (t+\tau) + \omega_T(t) + \phi_T + \phi_S)}
+If the frequency of the test and sampling pulse match, then we can detect an interference signal by measuring the intensity with a photodetector. This can be written as:
+$$ I_{HS+LO} = a $$ 
