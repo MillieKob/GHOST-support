@@ -1,7 +1,9 @@
 import numpy as np
 
+import PyQt5
+
 from GUI import Ui_MainWindow
-from Smaract_stage import Stage
+from Smaract_stage import Stage, StageWorker
 from ZHI import ZurichInstruments
 
 class GHOST_GUI():
@@ -12,9 +14,23 @@ class GHOST_GUI():
 
 # ========================== STAGE FUNCTIONS ==========================
 
+    def start_stage_worker(self):
+        '''
+        Start the SmarAct stage worker and set up a thread to receive constant position updates which will be displayed in GUI.
+        '''
+        self.stageThread = PyQt5.QtCore.QThread() # Variable to hold the stage thread
+        self.stageWorker = StageWorker(self.stage) # Variable to hold the stage worker
+        self.stageWorker.moveToThread(self.stageThread) # Put the worker on the thread
+
+        # Connect the signals from the worker to the GUI functions
+        self.stageWorker.started.connect(self.stageWorker.run)
+        self.stageWorker.finished.connect(self.stageWorker.stop)
+        self.stageWorker.finished.connect(self.stageWorker.deleteLater)
+
+
     def connect_sensor(self):
         '''
-        Connect to the Smaract stage. This function sets the default velocity of the stage of 500um/s and selects the stage connected to the first port.
+        Connect to the SmarAct stage. This function sets the default velocity of the stage of 500um/s and selects the stage connected to the first port.
         '''
         self.stage.connectSensor()
 

@@ -1,7 +1,7 @@
 import sys 
 import smaract.ctl as ctl
 import time
-import PyQT5
+import PyQt5
 
 class Stage:
     '''
@@ -160,14 +160,14 @@ class Stage:
         ctl.Stop(self.d_handle, self.channel)
         print("Stage movement stopped manually")
 
-class StageWorker(PyQT5.QtCore.QObject):
+class StageWorker(PyQt5.QtCore.QObject):
     '''
     Worker class for the SmarAct stage. Used to continuously monitor the position of the stage. 
     '''
 
-    started = PyQT5.QtCore.pyqtSignal()
-    finished = PyQT5.QtCore.pyqtSignal()
-    newpos = PyQT5.QtCore.pyqtSignal()
+    started = PyQt5.QtCore.pyqtSignal()
+    finished = PyQt5.QtCore.pyqtSignal()
+    newpos = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, stage):
         '''
