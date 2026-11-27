@@ -112,7 +112,7 @@ class Stage:
         Set the position of the stage to a specific value in pm. Input has to be an integer.
         '''
         if value is not int:
-            raise TypeError("Input value has to be an integer")
+            raise TypeError("SmarAct stage input position has to be an integer.")
         
         ctl.Move(self.d_handle, self.channel, value)
     

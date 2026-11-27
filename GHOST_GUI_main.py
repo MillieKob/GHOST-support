@@ -29,3 +29,15 @@ class GHOST_GUI():
         Disconnect the SmarAct stage and sensor.
         '''
         self.stage.disconnectStage()
+
+    def get_stage_position(self):
+        '''
+        Returns the current position of the connected SmarAct stage positioner. Output is in micrometers.
+        '''
+        return self.stage.getPosition()*1e6
+
+    def move_stage(self, value):
+        '''
+        Move the connected SmarAct stage to the input position. Value is taken in micrometers.
+        '''
+        self.stage.setPosition(int(value*1e6))
