@@ -1,8 +1,12 @@
 import sys 
 import smaract.ctl as ctl
 import time
+import PyQT5
 
 class Stage:
+    '''
+    Class for controllingthe SmarAct stage.
+    '''
     
     def __init__(self):
         self.assert_lib_compatibility()
@@ -155,3 +159,34 @@ class Stage:
         '''
         ctl.Stop(self.d_handle, self.channel)
         print("Stage movement stopped manually")
+
+class StageWorker(PyQT5.QtCore.QObject):
+    '''
+    Worker class for the SmarAct stage. Used to continuously monitor the position of the stage. 
+    '''
+
+    started = PyQT5.QtCore.pyqtSignal()
+    finished = PyQT5.QtCore.pyqtSignal()
+    newpos = PyQT5.QtCore.pyqtSignal()
+
+    def __init__(self, stage):
+        '''
+        Initalise the worker by connecting it to the stage class and setting the running flag to false. Emit a signal that the worker has started.
+        '''
+        self.stage = stage
+        self.running = False
+        self.started.emit()
+
+    def run(self):
+        self.running = True
+        while self.running:
+            pos = self.stage.getPosition()
+            self.newpos.emit(pos)
+            time.sleep(0.2)  # Adjust the sleep time as needed  
+        self.finished.emit() # The finished signal emits only after the loop is broken by the stop function.
+
+    def stop(self):
+        '''
+        Set the running flag to false.
+        '''
+        self.running = False
